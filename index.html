@@ -15,20 +15,19 @@
         <label for="rfcNumber">RFC Number:</label>
         <input type="text" id="rfcNumber" placeholder="Enter RFC Number..." />
 
-        <label>Terminology</label>
-        <input type="text" id="terminology" placeholder="Enter in Terminology Section..." />
+        <div id="inputContainer" class="input-container"></div>
 
-        <label>Overview</label>
-        <input type="text" id="overview" placeholder="Enter in Overview..." />
+        <div id="fileContainer" class="file-container"></div>
 
-        <label>Specification</label>
-        <input type="text" id="specification" placeholder="Enter in Protocol Specifications..." />
+        <div class="flex-row">
+            <label for="fieldCount">Enter the number of sections:</label>
+            <input type="number" id="fieldCount" placeholder="Enter number of sections" min="1" />
+        </div>
 
-        <label>Examples</label>
-        <input type="text" id="examples" placeholder="Enter in Examples..." />
-
-        <label for="stateDiagram">State Diagram 1: </label>
-        <input type="file" id="stateDiagram1" accept="image/*" />
+        <div class="flex-row">
+            <label for="fieldCount">Enter the number of files:</label>
+            <input type="number" id="fileCount" placeholder="Enter number of files" min="1" />
+        </div>
 
         <button onclick="getResponse()">Generate Code</button>
         <div id="response" class="response-container"></div>

@@ -13,49 +13,89 @@ FILE_DIR = 'C:/Users/tatao/Desktop/final_proj_test/state_diagrams/'
 def generate_response():
     data = request.get_json()
     rfcNumber = data.get("rfcNumber")
-    terminology = data.get("terminology")
-    overview = data.get("overview")
-    specification = data.get("specification")
-    stateDiagram = data.get("stateDiagram")
-
-    print("is this working?")
-    print(data)
+    sections = data.get("sections")
+    files = data.get("files")
 
     # if not prompt:
     #     return jsonify({"response": "No prompt provided"}), 400
 
 
-    rfc_prompt = 'Provide the specifications in bullet points for RFC ' + rfcNumber + ':\n'
+    # 1.) Get a general "skeleton specification" from Llama3.2:
+    prompt = 'Provide the specifications in bullet points for RFC ' + rfcNumber + ':\n'
 
-    first_response = ollama.chat(model='llama3.2', messages=[
+    response = ollama.chat(model='llama3.2', messages=[
         {
             'role': 'user',
-            'content': rfc_prompt
+            'content': prompt
         },
     ])
 
-    print(first_response['message']['content'])
+    print("Prompt: ", prompt)
+    print("===================================")
+    print(response['message']['content'])
+    print("===================================")
 
-    terminology_prompt = 'Update the current response: ' + first_response['message']['content'] + "with the following: \n" + terminology
+    # 2.) Process the Sections
+    for section in sections:
+        if section == "":
+            continue
+        prompt = "Update the specification to keep its content:\n" + response['message']['content'] + "\nbut add helpful information from the following portion of RFC " + rfcNumber + ":\n" + section
+        response = ollama.chat(model='llama3.2', messages=[
+            {
+                'role': 'user',
+                'content': prompt
+            }
+        ])
+        print("Prompt:", prompt)
+        print("===================================")
+        print(response['message']['content'])
+        print("===================================")
 
-    second_response = ollama.chat(model='llama3.2', messages=[
+    # 3.) Process the Files with llama3.2-vision
+
+
+
+    # 4.) Feed into llama3.1 for final specification
+    prompt = "Revise the following RFC " + rfcNumber + " specification to bullet points that list out the steps of the protocol: \n" + response['message']['content']
+    print("Prompt", prompt)
+    response = ollama.chat(model='llama3.1', messages=[
         {
             'role': 'user',
-            'content': terminology_prompt
-        },
+            'content': prompt
+        }
+    ])
+    print("===================================")
+    print(response['message']['content'])
+    print("===================================")
+
+    # 5.) Use qwen2.5-code to turn specification into psuedocode
+    prompt = "Turn the following RFC " + rfcNumber + " specification into Python pseudocode: \n" + response['message']['content']
+    print("Prompt", prompt)
+    response = ollama.chat(model='qwen2.5-coder', messages=[
+        {
+            'role': 'user',
+            'content': prompt
+        }
+    ])
+    print("===================================")
+    print(response['message']['content'])
+    print("===================================")
+
+    # 6.) Use qwen2.5-code to turn pseudocode into Python code
+    prompt = "Turn the following psuedocode for RFC " + rfcNumber + " to Python code: \n" + response['message']['content']
+    print("Prompt", prompt)
+    response = ollama.chat(model='qwen2.5-coder', messages=[
+        {
+            'role': 'user',
+            'content': prompt
+        }
     ])
 
-    print(second_response['message']['content'])
-    # response_psuedocode = ollama.chat(model='llama3.2', messages=[
-    # {
-    #     'role': 'user',
-    #     'content': new_str + prompt,
-    # },
-    # ])
+    print("===================================")
+    print(response['message']['content'])
+    print("===================================")
 
-    # print(response['message']['content'])
-
-    return jsonify({"response": second_response['message']['content']})
+    return jsonify({"response": response['message']['content']})
 
 if __name__ == "__main__":
     app.run(port=5000)
