@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import ollama
 import os
+import base64
 
 app = Flask(__name__)
 CORS(app)  # Enable Cross-Origin Resource Sharing for local testing
@@ -52,7 +53,32 @@ def generate_response():
         print("===================================")
 
     # 3.) Process the Files with llama3.2-vision
+    for file_path in files:
+        # with open(FILE_DIR + file_path, "rb") as file:
+        #     encoded_file = base64.b64encode(file.read()).decode("utf-8")
+        vision_response = ollama.chat(model="llama3.2-vision", messages=[
+            {
+                'role': 'user',
+                'content': 'Analyze this file.',
+                'images': [FILE_DIR + file_path]
+            }
+        ])
+        print("Vision response:", vision_response["message"]["content"])
+        print("===================================")
 
+        prompt = "The first block of text is specification for RFC " + rfcNumber + ". Update and revise according to the second block of text.\n"
+        prompt += "\n" + response["message"]["content"] + "\n"
+        prompt += "\n" + vision_response["message"]["content"]
+        response = ollama.chat(model='llama3.2', messages=[
+            {
+                'role': 'user',
+                'content': prompt
+            }
+        ])
+        print("Prompt:", prompt)
+        print("===================================")
+        print(response['message']['content'])
+        print("===================================")
 
 
     # 4.) Feed into llama3.1 for final specification
