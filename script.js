@@ -65,10 +65,6 @@ async function getResponse() {
         fileList.push(document.getElementById(`file-${i + 1}`).files[0].name);
     }
 
-    // const terminology = document.getElementById("terminology").value;
-    // const overview = document.getElementById("overview").value;
-    // const specification = document.getElementById("specification");
-    // const stateFileName = document.getElementById("stateDiagram1").files[0].name;
     const responseDiv = document.getElementById("response");
 
     if (!prompt) {

@@ -1,11 +1,11 @@
-# import subprocess
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import ollama
 
 app = Flask(__name__)
-CORS(app)  # Enable Cross-Origin Resource Sharing for local testing
+CORS(app)
 
+# CHANGE FILE_DIR TO POINT TO YOUR DIRECTORY CONTAINING THE IMAGES. ATTACHED BELOW IS AN EXAMPLE OF MY FILE PATH
 FILE_DIR = 'C:/Users/tatao/Desktop/final_proj_test/state_diagrams/'
 
 @app.route("/generate", methods=["POST"])
