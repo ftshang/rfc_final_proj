@@ -31,7 +31,7 @@ function generateFiles() {
     if (fileCount && fileCount > 0 && !isNaN(fileCount)) {
         for (let i = 0; i < fileCount; i += 1) {
             const newLabel = document.createElement("label");
-            newLabel.innerText = `State Diagram ${i + 1}:`
+            newLabel.innerText = `Image ${i + 1}:`
             newLabel.for = `file-${i + 1}`;
             const newFileInput = document.createElement("input");
             newFileInput.type = "file";
