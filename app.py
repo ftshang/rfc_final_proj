@@ -5,8 +5,8 @@ import ollama
 app = Flask(__name__)
 CORS(app)
 
-# CHANGE FILE_DIR TO POINT TO YOUR DIRECTORY CONTAINING THE IMAGES. ATTACHED BELOW IS AN EXAMPLE OF MY FILE PATH
-FILE_DIR = 'C:/Users/tatao/Desktop/final_proj_test/state_diagrams/'
+# IMPORTANT: Update FILE_DIR with the full directory path that points to the images folder on your local machine.
+FILE_DIR = 'C:/Users/tatao/Desktop/final_proj/images/'
 
 @app.route("/generate", methods=["POST"])
 def generate_response():
